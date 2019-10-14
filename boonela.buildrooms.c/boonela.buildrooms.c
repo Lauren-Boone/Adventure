@@ -335,7 +335,7 @@ void createDirectory() {
 int main() {
 
 	srand((int)time(NULL));
-	createDirectory();
+	//createDirectory();
 	initializeRooms();
 	
 
