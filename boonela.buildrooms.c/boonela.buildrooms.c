@@ -38,7 +38,7 @@ of numbers 0 through 9, using durstenfeld's shuffly
 the first seven are the rooms used. 
 **************************************/
 void chooseRooms(struct room *roomArr) {
-	
+	int i, x;
 
 	int roomId[10] = { 0,1,2,3,4,5,6,7,8,9 }; //id room room name to randomize
 	int swap = 0, temp = 0;
@@ -46,7 +46,7 @@ void chooseRooms(struct room *roomArr) {
 	//using the durstenfeld's shuffle
 	//Randomly change the numbers in the array. 
 	//randomly swap values at different locations with the last value, then decrement the range
-	for (int x = 9; x > 0; --x) {
+	for (x = 9; x > 0; --x) {
 		swap =  rand() % x;//random number between 0 and x(range lowers each loop)
 		temp = roomId[x];
 		roomId[x] = roomId[swap];
@@ -54,7 +54,7 @@ void chooseRooms(struct room *roomArr) {
 	}
 
 	//Now that all ten are randomized just use the first seven randomized rooms
-	for (int i = 0; i < NUM_ROOMS; ++i) {
+	for ( i = 0; i < NUM_ROOMS; ++i) {
 		roomArr[i].name = roomId[i];
 		
 		switch (roomId[i]) {
@@ -103,10 +103,11 @@ description:
 ******************************************/\
 void createConnections(struct room *roomArr) {
 	//int prev1, prev2, randNum;
+	int i;
 	int hasConnect = 0; //this is a bool value to make sure a connection is created.
 	int randNum;
 	//iterate through each room
-	for (int i = 0; i < 7; ++i) {
+	for ( i = 0; i < 7; ++i) {
 		
 		//start with 2 connects first
 			for (int j = 0; j < 1; ++j) {
@@ -158,9 +159,9 @@ return: 1(true), 0(false)
 description:
 ***********************************************/
 int isAlreadyConnect(struct room *roomArr, int room, int otherRoom) {
-
-	for (int i = 0; i < roomArr[room].outRoomNum; ++i) {
-		for (int j = 0; j < roomArr[otherRoom].outRoomNum; ++j) {
+	int i, j;
+	for ( i = 0; i < roomArr[room].outRoomNum; ++i) {
+		for ( j = 0; j < roomArr[otherRoom].outRoomNum; ++j) {
 			if (strcmp(roomArr[room].connections[i], roomArr[otherRoom].connections[j]) == 0) {
 				return 1;
 			}
@@ -193,7 +194,8 @@ the first room in the struct array is the start
 and the last is the end
 **********************************************/
 void chooseRoomType(struct room *roomArr){
-	for (int i = 0; i < 7; ++i) {
+	int i;
+	for ( i = 0; i < 7; ++i) {
 
 		//first room
 		if (i == 0) {
@@ -226,15 +228,16 @@ of type struct rooms and initlizes the values.
 void initializeRooms() {
 	struct room roomArr[NUM_ROOMS];
 	chooseRooms(roomArr);
-	for (int i = 0; i < 7; ++i) {
+	int i, j;
+	for (i = 0; i < 7; ++i) {
 		roomArr[i].outRoomNum = 0;
 	}
 	chooseRoomType(roomArr);
 
 	createConnections(roomArr);
-	for (int i = 0; i < 7; i++) {
+	for ( i = 0; i < 7; i++) {
 		printf("Room: %s\nRoomType: %s\n\n", roomArr[i].roomName, roomArr[i].roomType);
-		for (int j = 0; j < roomArr[i].outRoomNum; ++i) {
+		for (j = 0; j < roomArr[i].outRoomNum; ++i) {
 			printf("connect: %s", roomArr[i].connections[j]);
 		}
 	}
