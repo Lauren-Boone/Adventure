@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
+#include <sys/stat.h>
 #define _CRT_SECURE_NO_WARNINGS
 #pragma warning(disable : 4996)
 
@@ -95,6 +96,45 @@ void chooseRooms(struct room *roomArr) {
 	return;
 }
 
+
+
+
+/******************************************
+function: isAlreadyConnect
+arguments: an array of room structs connection, int
+return: 1(true), 0(false)
+description:
+***********************************************/
+int isAlreadyConnect(struct room *roomArr, int room, int otherRoom) {
+	int i, j;
+	for (i = 0; i < roomArr[room].outRoomNum; ++i) {
+
+		if (strcmp(roomArr[room].connections[i], roomArr[otherRoom].roomName) == 0) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+
+
+/************************************
+function: hasMaxConnect(int)
+arguments:integer (represents number of rooms)
+returns: 1(true) or 0(false)
+description: Determines if the number of connects
+is the max
+**********************************************/
+int hasMaxConnect(int connectionsIn) {
+	if (connectionsIn < 6) {
+		return 0;
+	}
+	return 1;
+}
+
+
+
+
 /**************************************
 function: connectRooms
 argurments, array of struct, int, int
@@ -107,11 +147,11 @@ rooms.
 *******************************************/
 void connectRooms(struct room *roomArr, int room1, int otherRoom) {
 
-	
-	
+
+
 	roomArr[room1].connections[(roomArr[room1].outRoomNum)] = malloc(20 * sizeof(char));
 	roomArr[otherRoom].connections[(roomArr[otherRoom].outRoomNum)] = malloc(20 * sizeof(char));
-	
+
 	memset(roomArr[room1].connections[(roomArr[room1].outRoomNum)], '\0', sizeof(roomArr[otherRoom].roomName));
 	memset(roomArr[otherRoom].connections[(roomArr[otherRoom].outRoomNum)], '\0', sizeof(roomArr[room1].roomName));
 	strcpy(roomArr[room1].connections[(roomArr[room1].outRoomNum)], roomArr[otherRoom].roomName);
@@ -119,47 +159,23 @@ void connectRooms(struct room *roomArr, int room1, int otherRoom) {
 	return;
 }
 
-/**************************************
-function: createConnections
-Arguments: struct rooms array
-returns: none
-description:
-******************************************/\
-void createConnections(struct room *roomArr) {
-	
-	int i, j;
-	
-	
-	//iterate through each room
-	for ( i = 0; i < 7; ++i) {
-		printf("Rooms:%s\n", roomArr[i].roomName);
-		//start with 2 connects first
-			for (j = 0; j < 2; ++j) {
-				connectionTest(roomArr, i);
-					
-			}
-	}
-	return;
-}
-
-
 
 /********************************************
 function: connectionTest()
 args: struct array
 return: none
-description: This function tests whether the 
-array value needs connects and if the connect is 
+description: This function tests whether the
+array value needs connects and if the connect is
 valid. This function is independent so that if
 there is an array value that does not have three
 connections this function can be called once without
 itterating through the intire array
 ****************************************************/
-void connectionTest(struct room *roomArr, int index) {
+void addConnection(struct room *roomArr, int index) {
 	int hasConnect = 0; //this is a bool value to make sure a connection is created.
 	int randNum;
 	int i = index;
-	//while the connection what not made add a connection
+	//while the connection has not been made
 	while (hasConnect == 0) {
 		randNum = rand() % 7;
 		//check to make sure the max limit is not reached
@@ -181,7 +197,6 @@ void connectionTest(struct room *roomArr, int index) {
 	return;
 }
 
-
 /***********************************
 function: checkConnectionMin()
 arguments: array
@@ -190,44 +205,50 @@ description: This function checks to make
 sure that the minimun number of connections
 for each room is met
 ********************************************/
-int hasConnectionMin(int num) {
-	
-		if (num < MIN_OUT) {
-			return 0;
-		
+int hasConnectionMin(struct room *roomArr) {
+	int i;
+	for (i = 0; i < 7; ++i) {
+		if (roomArr[i].outRoomNum < MIN_OUT) {
+			addConnection(roomArr, i);
+		}
 	}
-	return 1;
+	
 }
 
-/******************************************
-function: isAlreadyConnect
-arguments: an array of room structs connection, int
-return: 1(true), 0(false)
+
+
+
+/**************************************
+function: createConnections
+Arguments: struct rooms array
+returns: none
 description:
-***********************************************/
-int isAlreadyConnect(struct room *roomArr, int room, int otherRoom) {
+******************************************/
+void startConnectionsLoop(struct room *roomArr) {
+	
 	int i, j;
-	for ( i = 0; i < roomArr[room].outRoomNum; ++i) {
-		
-			if (strcmp(roomArr[room].connections[i], roomArr[otherRoom].roomName) == 0) {
-				return 1;
+	
+	
+	//iterate through each room
+	for ( i = 0; i < 7; ++i) {
+		printf("Rooms:%s\n", roomArr[i].roomName);
+		//start with 2 connects first
+			for (j = 0; j < 2; ++j) {
+				addConnection(roomArr, i);
+					
 			}
-		}
-	return 0;
-}
-/************************************
-function: hasMaxConnect(int)
-arguments:integer (represents number of rooms)
-returns: 1(true) or 0(false)
-description: Determines if the number of connects
-is the max
-**********************************************/
-int hasMaxConnect(int connectionsIn) {
-	if (connectionsIn < 6) {
-		return 0;
+			
 	}
-	return 1;
+	hasConnectionMin(roomArr);
+	return;
 }
+
+
+
+
+
+
+
 
 
 /******************************************
@@ -282,8 +303,8 @@ void initializeRooms() {
 	}
 	chooseRoomType(roomArr);
 
-	createConnections(roomArr);
-	
+	startConnectionsLoop(roomArr);
+	//hasConnectionMin(roomArr);
 	for ( i = 0; i < 7; i++) {
 		printf("Room: %s\nRoomType: %s\n\n", roomArr[i].roomName, roomArr[i].roomType);
 		for (j = 0; j < roomArr[i].outRoomNum; ++j) {
@@ -293,10 +314,28 @@ void initializeRooms() {
 	return;
 }
 
+/*****************************
+function: createDirectory()
+args: none
+return:none
+description: this function
+creates a directory to store
+all of the rooms in. The directory
+is identified using the Process Id.
+*****************************/
+void createDirectory() {
+	char *dirName = "boonela.rooms";
+	int pid = getpid();
+	memset(dirName, '\0', sizeof(dirName));
+	sprintf(dirName, "%s%d", dirName, pid);
+	mkdir(dirName, 755);
+	
 
+}
 int main() {
 
 	srand((int)time(NULL));
+	createDirectory();
 	initializeRooms();
 	
 
