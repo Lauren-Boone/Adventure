@@ -146,8 +146,8 @@ rooms.
 *******************************************/
 void connectRooms(struct room *roomArr, int room1, int otherRoom) {
 	
-	roomArr[room1].connections[(roomArr[room1].outRoomNum - 1)] = roomArr[otherRoom].roomName;
-	roomArr[otherRoom].connections[(roomArr[otherRoom].outRoomNum - 1)] = roomArr[room1].roomName;
+	strcpy(roomArr[room1].connections[(roomArr[room1].outRoomNum - 1)], roomArr[otherRoom].roomName);
+	strcpy(roomArr[otherRoom].connections[(roomArr[otherRoom].outRoomNum - 1)], roomArr[room1].roomName);
 	return;
 }
 
