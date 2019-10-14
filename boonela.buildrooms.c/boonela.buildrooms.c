@@ -94,6 +94,26 @@ void chooseRooms(struct room *roomArr) {
 	return;
 }
 
+/**************************************
+function: connectRooms
+argurments, array of struct, int, int
+return: none
+description: This functions adds a connection
+between the rooms. Both rooms will not be
+connected to each other. The manipulates the
+connections array of char* in the struct
+rooms.
+*******************************************/
+void connectRooms(struct room *roomArr, int room1, int otherRoom) {
+
+	
+	
+	roomArr[room1].connections[(roomArr[room1].outRoomNum)] = malloc(20 * sizeof(char));
+	roomArr[otherRoom].connections[(roomArr[otherRoom].outRoomNum)] = malloc(20 * sizeof(char));
+	strcpy(roomArr[room1].connections[(roomArr[room1].outRoomNum)], roomArr[otherRoom].roomName);
+	strcpy(roomArr[otherRoom].connections[(roomArr[otherRoom].outRoomNum)], roomArr[room1].roomName);
+	return;
+}
 
 /**************************************
 function: createConnections
@@ -135,26 +155,7 @@ void createConnections(struct room *roomArr) {
 }
 
 
-/**************************************
-function: connectRooms
-argurments, array of struct, int, int
-return: none
-description: This functions adds a connection
-between the rooms. Both rooms will not be
-connected to each other. The manipulates the
-connections array of char* in the struct
-rooms.
-*******************************************/
-void connectRooms(struct room *roomArr, int room1, int otherRoom) {
-	
-	char *first = roomArr[otherRoom].roomName;
-	char *second = roomArr[room1].roomName;
-	roomArr[room1].connections[(roomArr[room1].outRoomNum - 1)] = malloc(20 * sizeof(char));
-	roomArr[otherRoom].connections[(roomArr[otherRoom].outRoomNum - 1)] = malloc(20 * sizeof(char));
-	strcpy(roomArr[room1].connections[(roomArr[room1].outRoomNum - 1)], first);
-	strcpy(roomArr[otherRoom].connections[(roomArr[otherRoom].outRoomNum - 1)], second);
-	return;
-}
+
 
 
 /******************************************
