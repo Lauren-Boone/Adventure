@@ -103,14 +103,14 @@ description:
 ******************************************/\
 void createConnections(struct room *roomArr) {
 	//int prev1, prev2, randNum;
-	int i;
+	int i, j;
 	int hasConnect = 0; //this is a bool value to make sure a connection is created.
 	int randNum;
 	//iterate through each room
 	for ( i = 0; i < 7; ++i) {
 		
 		//start with 2 connects first
-			for (int j = 0; j < 1; ++j) {
+			for (j = 0; j < 1; ++j) {
 				//check to make sure the max limit is not reached
 				if (hasMaxConnect(roomArr[i].outRoomNum) == 0) {
 					hasConnect = 0;
@@ -119,7 +119,8 @@ void createConnections(struct room *roomArr) {
 						randNum = rand() % 7;
 						if (randNum != i) { //make sure the connection is not it itself
 							//check that the connection doesn't already exist (0for false)
-							if ((isAlreadyConnect(roomArr, i, randNum) == 0)) {
+							if (isAlreadyConnect(roomArr, i, randNum) == 0) {
+								
 								connectRooms(roomArr, i, randNum);
 								roomArr[i].outRoomNum++;
 								roomArr[randNum].outRoomNum++;
@@ -146,8 +147,12 @@ rooms.
 *******************************************/
 void connectRooms(struct room *roomArr, int room1, int otherRoom) {
 	
-	strcpy(roomArr[room1].connections[(roomArr[room1].outRoomNum - 1)], roomArr[otherRoom].roomName);
-	strcpy(roomArr[otherRoom].connections[(roomArr[otherRoom].outRoomNum - 1)], roomArr[room1].roomName);
+	char *first = roomArr[otherRoom].roomName;
+	char *second = roomArr[room1].roomName;
+	roomArr[room1].connections[(roomArr[room1].outRoomNum - 1)] = malloc(20 * sizeof(char));
+	roomArr[otherRoom].connections[(roomArr[otherRoom].outRoomNum - 1)] = malloc(20 * sizeof(char));
+	strcpy(roomArr[room1].connections[(roomArr[room1].outRoomNum - 1)], first);
+	strcpy(roomArr[otherRoom].connections[(roomArr[otherRoom].outRoomNum - 1)], second);
 	return;
 }
 
