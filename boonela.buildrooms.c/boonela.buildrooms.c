@@ -56,7 +56,7 @@ void chooseRooms(struct room *roomArr) {
 	//Now that all ten are randomized just use the first seven randomized rooms
 	for ( i = 0; i < NUM_ROOMS; ++i) {
 		roomArr[i].name = roomId[i];
-		
+		memset(roomArr[i].roomName, '\0', sizeof(roomArr[i].roomName));
 		switch (roomId[i]) {
 		case 0: 
 			strcpy(roomArr[i].roomName, "one");
@@ -89,8 +89,9 @@ void chooseRooms(struct room *roomArr) {
 			strcpy(roomArr[i].roomName, "ten");
 			break;
 		}
-		memset(roomArr[i].roomName, '\0', sizeof(roomArr[i].roomName));
+		
 	}
+
 	return;
 }
 
@@ -110,6 +111,9 @@ void connectRooms(struct room *roomArr, int room1, int otherRoom) {
 	
 	roomArr[room1].connections[(roomArr[room1].outRoomNum)] = malloc(20 * sizeof(char));
 	roomArr[otherRoom].connections[(roomArr[otherRoom].outRoomNum)] = malloc(20 * sizeof(char));
+	
+	memset(roomArr[room1].connections[(roomArr[room1].outRoomNum)], '\0', sizeof(roomArr[otherRoom].roomName));
+	memset(roomArr[otherRoom].connections[(roomArr[otherRoom].outRoomNum)], '\0', sizeof(roomArr[room1].roomName));
 	strcpy(roomArr[room1].connections[(roomArr[room1].outRoomNum)], roomArr[otherRoom].roomName);
 	strcpy(roomArr[otherRoom].connections[(roomArr[otherRoom].outRoomNum)], roomArr[room1].roomName);
 	return;
@@ -122,32 +126,55 @@ returns: none
 description:
 ******************************************/\
 void createConnections(struct room *roomArr) {
-	//int prev1, prev2, randNum;
+	
 	int i, j;
-	int hasConnect = 0; //this is a bool value to make sure a connection is created.
-	int randNum;
+	
+	
 	//iterate through each room
 	for ( i = 0; i < 7; ++i) {
-		
+		printf("Rooms:%s\n", roomArr[i].roomName);
 		//start with 2 connects first
-			for (j = 0; j < 1; ++j) {
-				//check to make sure the max limit is not reached
-				if (hasMaxConnect(roomArr[i].outRoomNum) == 0) {
-					hasConnect = 0;
-					//while the connection what not made add a connection
-					while (hasConnect == 0) {
-						randNum = rand() % 7;
-						if (randNum != i) { //make sure the connection is not it itself
-							//check that the connection doesn't already exist (0for false)
-							if (isAlreadyConnect(roomArr, i, randNum) == 0) {
-								
-								connectRooms(roomArr, i, randNum);
-								roomArr[i].outRoomNum++;
-								roomArr[randNum].outRoomNum++;
-								hasConnect = 1;
-							}
-						}
-					}
+			for (j = 0; j < 2; ++j) {
+				connectionTest(roomArr, i);
+					
+			}
+	}
+	return;
+}
+
+
+
+/********************************************
+function: connectionTest()
+args: struct array
+return: none
+description: This function tests whether the 
+array value needs connects and if the connect is 
+valid. This function is independent so that if
+there is an array value that does not have three
+connections this function can be called once without
+itterating through the intire array
+****************************************************/
+void connectionTest(struct room *roomArr, int index) {
+	int hasConnect = 0; //this is a bool value to make sure a connection is created.
+	int randNum;
+	int i = index;
+	//while the connection what not made add a connection
+	while (hasConnect == 0) {
+		randNum = rand() % 7;
+		//check to make sure the max limit is not reached
+		if ((hasMaxConnect(roomArr[i].outRoomNum) == 0) && (hasMaxConnect(roomArr[randNum].outRoomNum) == 0)) {
+			if (randNum != i) { //make sure the connection is not it itself
+				//check that the connection doesn't already exist (0for false)
+				if (isAlreadyConnect(roomArr, i, randNum) == 0) {
+
+					connectRooms(roomArr, i, randNum);
+					roomArr[i].outRoomNum++;
+					roomArr[randNum].outRoomNum++;
+					hasConnect = 1;
+					//								
+
+				}
 			}
 		}
 	}
@@ -155,8 +182,22 @@ void createConnections(struct room *roomArr) {
 }
 
 
-
-
+/***********************************
+function: checkConnectionMin()
+arguments: array
+return 1(true) 0(false)
+description: This function checks to make
+sure that the minimun number of connections
+for each room is met
+********************************************/
+int hasConnectionMin(int num) {
+	
+		if (num < MIN_OUT) {
+			return 0;
+		
+	}
+	return 1;
+}
 
 /******************************************
 function: isAlreadyConnect
@@ -167,12 +208,11 @@ description:
 int isAlreadyConnect(struct room *roomArr, int room, int otherRoom) {
 	int i, j;
 	for ( i = 0; i < roomArr[room].outRoomNum; ++i) {
-		for ( j = 0; j < roomArr[otherRoom].outRoomNum; ++j) {
-			if (strcmp(roomArr[room].connections[i], roomArr[otherRoom].connections[j]) == 0) {
+		
+			if (strcmp(roomArr[room].connections[i], roomArr[otherRoom].roomName) == 0) {
 				return 1;
 			}
 		}
-	}
 	return 0;
 }
 /************************************
@@ -233,6 +273,8 @@ of type struct rooms and initlizes the values.
 *********************************************/
 void initializeRooms() {
 	struct room roomArr[NUM_ROOMS];
+	//strcpy(roomArr[0].roomName, "Lauren");
+	//printf("%s", roomArr[0].roomName);
 	chooseRooms(roomArr);
 	int i, j;
 	for (i = 0; i < 7; ++i) {
@@ -241,10 +283,11 @@ void initializeRooms() {
 	chooseRoomType(roomArr);
 
 	createConnections(roomArr);
+	
 	for ( i = 0; i < 7; i++) {
 		printf("Room: %s\nRoomType: %s\n\n", roomArr[i].roomName, roomArr[i].roomType);
-		for (j = 0; j < roomArr[i].outRoomNum; ++i) {
-			printf("connect: %s", roomArr[i].connections[j]);
+		for (j = 0; j < roomArr[i].outRoomNum; ++j) {
+			printf("connect: %s\n", roomArr[i].connections[j]);
 		}
 	}
 	return;
