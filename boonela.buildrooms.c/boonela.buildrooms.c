@@ -335,11 +335,11 @@ char* createDirectory() {
 
 
 void addFiles(char* dirName, struct room *roomArr) {
-
+	FILE *roomFiles;
 	chdir(dirName);
 	int i, j;
 	for (i = 0; i < NUM_ROOMS; ++i) {
-		FILE *roomFiles = fopen(roomArr[i].name, "w");
+		*roomFiles = fopen(roomArr[i].name, "w");
 
 		fprintf(roomFiles, "ROOM NAME:  %s\n", roomArr[i].roomName);
 		for (j = 0; j < roomArr[i].outRoomNum; ++j) {
