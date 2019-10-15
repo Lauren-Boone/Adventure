@@ -292,8 +292,8 @@ returns: none
 description: This functions creates the array
 of type struct rooms and initlizes the values.
 *********************************************/
-void initializeRooms() {
-	struct room roomArr[NUM_ROOMS];
+void initializeRooms(struct room *roomArr) {
+	
 	//strcpy(roomArr[0].roomName, "Lauren");
 	//printf("%s", roomArr[0].roomName);
 	chooseRooms(roomArr);
@@ -323,20 +323,42 @@ creates a directory to store
 all of the rooms in. The directory
 is identified using the Process Id.
 *****************************/
-void createDirectory() {
-	char *dirName = "boonela.rooms";
+char* createDirectory() {
+	char *dirName = "./boonela.rooms.";
 	int pid = getpid();
 	memset(dirName, '\0', sizeof(dirName));
 	sprintf(dirName, "%s%d", dirName, pid);
 	mkdir(dirName, 755);
-	
+	return dirName;
 
 }
+
+
+void addFiles(char* dirName, struct room *roomArr) {
+
+	FILE *roomFiles;
+	int i, j;
+	for (i = 0; i < NUM_ROOMS; ++i) {
+		roomFiles = fopen(roomArr[i].name, "w");
+
+		fprintf(roomFiles, "ROOM NAME:  %s\n", roomArr[i].roomName);
+		for (j = 0; j < roomArr[i].outRoomNum; ++j) {
+			fprintf(roomFiles, "CONNECTION %d: %s", (j + 1), roomArr[i].connections[j]);
+		}
+		fprintf(roomFiles, "ROOM TYPE: %s", roomArr[i].roomType);
+		fclose(roomFiles);
+	}
+
+
+}
+
 int main() {
 
 	srand((int)time(NULL));
-	//createDirectory();
-	initializeRooms();
+	struct room roomArr[NUM_ROOMS];
+	char *dirName = createDirectory();
+	initializeRooms(roomArr);
+	addFile(dirName, roomArr);
 	
 
 	
