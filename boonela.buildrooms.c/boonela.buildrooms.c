@@ -339,7 +339,7 @@ void addFiles(char* dirName, struct room *roomArr) {
 	chdir(dirName);
 	int i, j;
 	for (i = 0; i < NUM_ROOMS; ++i) {
-		*roomFiles = fopen(roomArr[i].name, "w");
+		roomFiles = fopen(roomArr[i].roomName, "w");
 
 		fprintf(roomFiles, "ROOM NAME:  %s\n", roomArr[i].roomName);
 		for (j = 0; j < roomArr[i].outRoomNum; ++j) {
@@ -349,7 +349,7 @@ void addFiles(char* dirName, struct room *roomArr) {
 		fclose(roomFiles);
 	}
 
-
+	return;
 }
 
 int main() {
