@@ -330,7 +330,7 @@ void createDirectory() {
 	int pid = getpid();
 	memset(dirName, '\0', sizeof(dirName));
 	sprintf(dirName, "%s%d", dirName, pid);
-	mkdir(dirName, 755);
+	mkdir(dirName, 0770);
 	return;
 
 }
