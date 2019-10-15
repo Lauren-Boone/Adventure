@@ -336,10 +336,10 @@ char* createDirectory() {
 
 void addFiles(char* dirName, struct room *roomArr) {
 
-	FILE *roomFiles;
+	
 	int i, j;
 	for (i = 0; i < NUM_ROOMS; ++i) {
-		roomFiles = fopen(roomArr[i].name, "w");
+		FILE *roomFiles = fopen(roomArr[i].name, "w");
 
 		fprintf(roomFiles, "ROOM NAME:  %s\n", roomArr[i].roomName);
 		for (j = 0; j < roomArr[i].outRoomNum; ++j) {
