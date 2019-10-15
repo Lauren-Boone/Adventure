@@ -4,6 +4,8 @@
 #include <math.h>
 #include <time.h>
 #include <sys/stat.h>
+
+
 #define _CRT_SECURE_NO_WARNINGS
 #pragma warning(disable : 4996)
 
@@ -323,19 +325,25 @@ creates a directory to store
 all of the rooms in. The directory
 is identified using the Process Id.
 *****************************/
-char* createDirectory() {
-	char *dirName = "./boonela.rooms.";
+void createDirectory() {
+	char dirName[] = "boonela.rooms.";
 	int pid = getpid();
 	memset(dirName, '\0', sizeof(dirName));
 	sprintf(dirName, "%s%d", dirName, pid);
 	mkdir(dirName, 755);
-	return dirName;
+	return;
 
 }
 
 
-void addFiles(char* dirName, struct room *roomArr) {
+void addFiles( struct room *roomArr) {
 	FILE *roomFiles;
+	char dirName[] = "boonela.rooms.";
+	int pid = getpid();
+	memset(dirName, '\0', sizeof(dirName));
+	sprintf(dirName, "%s%d", dirName, pid);
+
+
 	chdir(dirName);
 	int i, j;
 	for (i = 0; i < NUM_ROOMS; ++i) {
@@ -356,9 +364,9 @@ int main() {
 
 	srand((int)time(NULL));
 	struct room roomArr[NUM_ROOMS];
-	char *dirName = createDirectory();
+	createDirectory();
 	initializeRooms(roomArr);
-	addFiles(dirName, roomArr);
+	addFiles( roomArr);
 	
 
 	
