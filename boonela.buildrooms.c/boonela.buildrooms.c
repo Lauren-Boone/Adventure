@@ -336,7 +336,7 @@ char* createDirectory() {
 
 void addFiles(char* dirName, struct room *roomArr) {
 
-	
+	chdir(dirName);
 	int i, j;
 	for (i = 0; i < NUM_ROOMS; ++i) {
 		FILE *roomFiles = fopen(roomArr[i].name, "w");
