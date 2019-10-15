@@ -358,7 +358,7 @@ int main() {
 	struct room roomArr[NUM_ROOMS];
 	char *dirName = createDirectory();
 	initializeRooms(roomArr);
-	addFile(dirName, roomArr);
+	addFiles(dirName, roomArr);
 	
 
 	
