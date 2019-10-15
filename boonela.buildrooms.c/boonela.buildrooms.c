@@ -326,7 +326,7 @@ all of the rooms in. The directory
 is identified using the Process Id.
 *****************************/
 void createDirectory() {
-	char dirName[] = "boonela.rooms.";
+	char dirName[] = "./boonela.rooms.";
 	int pid = getpid();
 	memset(dirName, '\0', sizeof(dirName));
 	sprintf(dirName, "%s%d", dirName, pid);
@@ -351,9 +351,9 @@ void addFiles( struct room *roomArr) {
 
 		fprintf(roomFiles, "ROOM NAME:  %s\n", roomArr[i].roomName);
 		for (j = 0; j < roomArr[i].outRoomNum; ++j) {
-			fprintf(roomFiles, "CONNECTION %d: %s", (j + 1), roomArr[i].connections[j]);
+			fprintf(roomFiles, "CONNECTION %d: %s\n", (j + 1), roomArr[i].connections[j]);
 		}
-		fprintf(roomFiles, "ROOM TYPE: %s", roomArr[i].roomType);
+		fprintf(roomFiles, "ROOM TYPE: %s\n", roomArr[i].roomType);
 		fclose(roomFiles);
 	}
 
