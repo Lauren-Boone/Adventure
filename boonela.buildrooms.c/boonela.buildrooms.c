@@ -367,7 +367,7 @@ void addFiles( struct room *roomArr) {
 
 
 void remove(struct room *roomArr) {
-	char *connections[MAX_OUT];
+	
 	int i,j;
 	for (i = 0; i < NUM_ROOMS; ++i) {
 		for (j = 0; j < roomArr[i].outRoomNum; ++i) {
