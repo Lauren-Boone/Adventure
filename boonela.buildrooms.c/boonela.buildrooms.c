@@ -365,6 +365,16 @@ void addFiles( struct room *roomArr) {
 	return;
 }
 
+
+void remove(struct room *roomArr) {
+	char *connections[MAX_OUT];
+	int i,j;
+	for (i = 0; i < NUM_ROOMS; ++i) {
+		for (j = 0; j < roomArr[i].outRoomNum; ++i) {
+			free(roomArr[i].connections[j]);
+		}
+	}
+}
 int main() {
 
 	srand((int)time(NULL));
@@ -372,7 +382,7 @@ int main() {
 	createDirectory();
 	initializeRooms(roomArr);
 	addFiles( roomArr);
-	
+	remove(roomArr);
 
 	
 	
