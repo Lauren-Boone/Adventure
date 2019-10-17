@@ -370,7 +370,7 @@ void removeConnections(struct room *roomArr) {
 	
 	int i,j;
 	for (i = 0; i < NUM_ROOMS; ++i) {
-		for (j = 0; j < roomArr[i].outRoomNum; ++i) {
+		for (j = 0; j < roomArr[i].outRoomNum; ++j) {
 			free(roomArr[i].connections[j]);
 		}
 	}
