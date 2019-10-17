@@ -366,7 +366,7 @@ void addFiles( struct room *roomArr) {
 }
 
 
-void remove(struct room *roomArr) {
+void removeConnections(struct room *roomArr) {
 	
 	int i,j;
 	for (i = 0; i < NUM_ROOMS; ++i) {
@@ -374,6 +374,7 @@ void remove(struct room *roomArr) {
 			free(roomArr[i].connections[j]);
 		}
 	}
+	return;
 }
 int main() {
 
@@ -382,7 +383,7 @@ int main() {
 	createDirectory();
 	initializeRooms(roomArr);
 	addFiles( roomArr);
-	remove(roomArr);
+	removeConnections(roomArr);
 
 	
 	

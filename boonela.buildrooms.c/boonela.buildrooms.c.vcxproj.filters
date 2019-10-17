@@ -18,5 +18,8 @@
     <ClCompile Include="boonela.buildrooms.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="boonela.adventure.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
