@@ -17,15 +17,15 @@
 
 
 //Enum for the room names and types
-enum roomNames {one=0, two, three, four, five, six, seven, eight, nine, ten };
-enum roomTypes {start=0, mid, end};
+//enum roomNames {one=0, two, three, four, five, six, seven, eight, nine, ten };
+//enum roomTypes {start=0, mid, end};
 struct room {
 	char roomName[20];
 	char roomType[32];
 	int outRoomNum;
 	char *connections[MAX_OUT];
-	enum roomNames name;
-	enum roomTypes type;
+	//enum roomNames name;
+	//enum roomTypes type;
 };
 
 
@@ -58,7 +58,7 @@ void chooseRooms(struct room *roomArr) {
 
 	//Now that all ten are randomized just use the first seven randomized rooms
 	for ( i = 0; i < NUM_ROOMS; ++i) {
-		roomArr[i].name = roomId[i];
+		//roomArr[i].name = roomId[i];
 		memset(roomArr[i].roomName, '\0', sizeof(roomArr[i].roomName));
 		switch (roomId[i]) {
 		case 0: 
@@ -273,18 +273,18 @@ void chooseRoomType(struct room *roomArr){
 		//first room
 		if (i == 0) {
 			strcpy(roomArr[i].roomType, "START_ROOM");
-			roomArr[i].type = 0;
+			//roomArr[i].type = 0;
 		}
 
 		//last room
 		else if (i == 6) {
 			strcpy(roomArr[i].roomType, "END_ROOM");
-			roomArr[i].type = 2;
+			//roomArr[i].type = 2;
 		}
 		//all others are midrooms
 		else {
 			strcpy(roomArr[i].roomType, "MID_ROOM");
-			roomArr[i].type = 1;
+			//roomArr[i].type = 1;
 		}
 	}
 	return;
