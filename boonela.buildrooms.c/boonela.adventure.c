@@ -22,8 +22,10 @@ struct room {
 	char *connections[MAX_OUT];
 
 };
+ 
 
-char* getMostRecentDirectory() {
+
+int main(){
 	int newestDirTime = -1;
 	char targetDirName[32] = "boonela.rooms.";
 	char newestDir[256];
@@ -54,3 +56,4 @@ char* getMostRecentDirectory() {
 
 
 }
+
