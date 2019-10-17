@@ -224,7 +224,11 @@ int hasConnectionMin(struct room *roomArr) {
 function: createConnections
 Arguments: struct rooms array
 returns: none
-description:
+description:This function is separate from 
+add connection so that the program can add 
+a connection to a connection deficint room without
+having to loop through all the rooms again.
+This saves a lot a time during run time. 
 ******************************************/
 void startConnectionsLoop(struct room *roomArr) {
 	
@@ -338,7 +342,7 @@ void createDirectory() {
 
 void addFiles( struct room *roomArr) {
 	FILE *roomFiles;
-	char dirName[] = "boonela.rooms.";
+	char dirName[] = "./boonela.rooms.";
 	int pid = getpid();
 	memset(dirName, '\0', sizeof(dirName));
 	sprintf(dirName, "%s%d", dirName, pid);
