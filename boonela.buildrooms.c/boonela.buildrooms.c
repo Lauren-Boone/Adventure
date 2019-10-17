@@ -330,7 +330,7 @@ all of the rooms in. The directory
 is identified using the Process Id.
 *****************************/
 void createDirectory() {
-	char dirName[] = "./boonela.rooms.";
+	char dirName[] = "boonela.rooms.";
 	int pid = getpid();
 	memset(dirName, '\0', sizeof(dirName));
 	sprintf(dirName, "%s%d", dirName, pid);
