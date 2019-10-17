@@ -330,8 +330,8 @@ all of the rooms in. The directory
 is identified using the Process Id.
 *****************************/
 void createDirectory() {
-	char dirName[] = "boonela.rooms.";
-	char folderName[] = "boonela.rooms.";
+	char dirName[] = "./boonela.rooms.";
+	char folderName[] = "./boonela.rooms.";
 	int pid = getpid();
 	memset(dirName, '\0', sizeof(dirName));
 	sprintf(dirName, "%s%d", folderName, pid);
@@ -344,9 +344,10 @@ void createDirectory() {
 void addFiles( struct room *roomArr) {
 	FILE *roomFiles;
 	char dirName[] = "./boonela.rooms.";
+	char folderName[] = "./boonela.rooms.";
 	int pid = getpid();
 	memset(dirName, '\0', sizeof(dirName));
-	sprintf(dirName, "%s%d", dirName, pid);
+	sprintf(dirName, "%s%d", folderName, pid);
 
 
 	chdir(dirName);
