@@ -18,9 +18,11 @@
 #define MAX_OUT 6
 #define STRING_SIZE 40
 
+
+//globals
 pthread_mutex_t timeLock= PTHREAD_MUTEX_INITIALIZER;
 char dirName[256];
-char parentDir[256];
+char parentDir[256];//used for creating currenttime.txt
 
 
 enum roomType {
@@ -45,6 +47,7 @@ main thread to open and read the
 time from a file
 *********************************/
 void getTime() {
+
 	char timeFileName[] = "currentTime.txt";
 	char currentTime[200]; //string to hold time
 	FILE* timeFile;//pinter to file
@@ -176,11 +179,12 @@ void initializeRooms(struct room *roomArr, char* dirName) {
 		memset(roomArr[i].roomName, '\0', sizeof(roomArr[i].roomName));
 		roomArr[i].outRoomNum = 0;
 	}
+	//go to the newest rooms directory
 	chdir(dirName);
 		dir = opendir(".");
 		if (dir > 0) {
 			while ((files = readdir(dir))) {
-				if (strlen(files->d_name) > 2) {
+				if (strlen(files->d_name) > 2) {//make sure not to read '.' or '..'
 					memset(roomArr[j].roomName, '\0', sizeof(roomArr[i].roomName));
 					strcpy(roomArr[j].roomName, files->d_name);
 					//printf(" %s", files->d_name);
@@ -370,6 +374,8 @@ void startGame(struct room *roomArr) {
 				numCharsEntered = getline(&lineEntered, &bufferSize, stdin);
 				i = strchr(lineEntered, '\n');
 				*i = '\0';
+				//if its a room update current room otherwise print huh
+				//same as above
 				if (checkIfValid(roomArr, lineEntered, currentRoom) > -1) {
 					currentRoom = getRoomIndex(roomArr, lineEntered);
 					roomsVisited[stepCount] = currentRoom;
@@ -416,7 +422,7 @@ void initializeGame() {
 }
 
 int main(){
-	getcwd(parentDir, sizeof(parentDir));
+	getcwd(parentDir, sizeof(parentDir));//used for creating currentTime.txt
 	initializeGame();
 	//findNewestFile();
 	return 0;
