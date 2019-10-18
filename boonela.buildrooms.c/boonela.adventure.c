@@ -269,7 +269,7 @@ void printRoom(int index, struct room *roomArr) {
 	printf("\n\nCURRENT LOCATION: %s\n", roomArr[index].roomName);
 	printf("POSSIBLE CONNECTIONS: ");
 	for (i = 0; i < roomArr[index].outRoomNum; ++i) {
-		if ((i - 1) == roomArr[index].outRoomNum) {
+		if ((i + 1) == roomArr[index].outRoomNum) {
 			printf("%s.", roomArr[index].connections[i]);
 		}
 		else {
@@ -337,17 +337,22 @@ logic for the game
 ******************************************/
 void startGame(struct room *roomArr) {
 	int currentRoom = findStart(roomArr);
-	int roomsVisited[40];
+	int roomsVisited[40]; //store indexes on rooms visited
 	int valid = -1, stepCount = 0, numCharsEntered = -5, j;
 	size_t bufferSize = 32;
 	char *lineEntered = NULL, *i;
 	//printRoom(findStart(roomArr), roomArr);
 	
-	while (roomArr[currentRoom].rtype != 2) {
+	while (roomArr[currentRoom].rtype != 2) {//while the current room is not the end room
+		//print the room
 		printRoom(currentRoom, roomArr);
+
+		//get input for the next room
 		numCharsEntered = getline(&lineEntered, &bufferSize, stdin);
+		//remove trailing endline replace with /0
 		i = strchr(lineEntered, '\n');
 		*i = '\0';
+		//validation check. if valid move to new room
 		if (checkIfValid(roomArr, lineEntered, currentRoom) > -1) {
 			currentRoom = getRoomIndex(roomArr, lineEntered);
 			roomsVisited[stepCount] = currentRoom;
@@ -355,17 +360,36 @@ void startGame(struct room *roomArr) {
 			
 			
 		}
+		//if time command loop
 		else if (strcmp(lineEntered, "time") == 0) {
-			initializeThreads();
-			getTime();
+			//loop until a room is entered
+			while (strcmp(lineEntered, "time") == 0) {
+				initializeThreads();
+				getTime();
+				printf("\nWHERE TO? >");
+				numCharsEntered = getline(&lineEntered, &bufferSize, stdin);
+				i = strchr(lineEntered, '\n');
+				*i = '\0';
+				if (checkIfValid(roomArr, lineEntered, currentRoom) > -1) {
+					currentRoom = getRoomIndex(roomArr, lineEntered);
+					roomsVisited[stepCount] = currentRoom;
+					stepCount++;
+				}
+				else if (strcmp(lineEntered, "time") != 0) {
+					printf("\nHUH? I DON'T UNDERSTAND THAT ROOM. TRY AGAIN.\n");
+				}
+			}
+			
 		}
-
+		//not valid input
 		else {
 			printf("\nHUH? I DON'T UNDERSTAND THAT ROOM. TRY AGAIN.\n");
 		}
 		
 	}
+	
 	free(lineEntered);
+	//double check that game is over and print details
 	if (roomArr[currentRoom].rtype == 2) {
 		printf("YOU HAVE FOUND THE END ROOM. CONGRATULATIONS!\n");
 		printf("YOU TOOK %d STEPS. YOUR PATH TO VICTORY WAS: \n", stepCount);

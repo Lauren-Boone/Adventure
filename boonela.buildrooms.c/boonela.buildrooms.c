@@ -237,7 +237,7 @@ void startConnectionsLoop(struct room *roomArr) {
 	
 	//iterate through each room
 	for ( i = 0; i < 7; ++i) {
-		printf("Rooms:%s\n", roomArr[i].roomName);
+		//printf("Rooms:%s\n", roomArr[i].roomName);
 		//start with 2 connects first
 			for (j = 0; j < 2; ++j) {
 				addConnection(roomArr, i);
@@ -312,9 +312,9 @@ void initializeRooms(struct room *roomArr) {
 	startConnectionsLoop(roomArr);
 	//hasConnectionMin(roomArr);
 	for ( i = 0; i < 7; i++) {
-		printf("Room: %s\nRoomType: %s\n\n", roomArr[i].roomName, roomArr[i].roomType);
+	//	printf("Room: %s\nRoomType: %s\n\n", roomArr[i].roomName, roomArr[i].roomType);
 		for (j = 0; j < roomArr[i].outRoomNum; ++j) {
-			printf("connect: %s\n", roomArr[i].connections[j]);
+			//printf("connect: %s\n", roomArr[i].connections[j]);
 		}
 	}
 	return;
