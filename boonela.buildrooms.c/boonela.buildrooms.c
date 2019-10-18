@@ -331,7 +331,7 @@ is identified using the Process Id.
 *****************************/
 void createDirectory() {
 	char dirName[] = "./boonela.rooms.";
-	char folderName[] = "./boonela.rooms.";
+	char folderName[] = "boonela.rooms.";
 	int pid = getpid();
 	memset(dirName, '\0', sizeof(dirName));
 	sprintf(dirName, "%s%d", folderName, pid);
