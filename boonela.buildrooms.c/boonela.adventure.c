@@ -18,6 +18,11 @@
 #define MAX_OUT 6
 #define STRING_SIZE 40
 
+pthread_mutex_t timeLock= PTHREAD_MUTEX_INITIALIZER;
+char dirName[256];
+char parentDir[256];
+
+
 enum roomType {
 	START_ROOM = 0, MID_ROOM, END_ROOM
 };
@@ -31,6 +36,91 @@ struct room {
 
 };
  
+
+
+/******************************
+function: getTime();
+This function is called from the
+main thread to open and read the
+time from a file
+*********************************/
+void getTime() {
+	char timeFileName[] = "currentTime.txt";
+	char currentTime[200]; //string to hold time
+	FILE* timeFile;//pinter to file
+	//open to read time file
+	
+	timeFile = fopen(timeFileName, "r");
+	//get the time and print it;
+	while (fgets(currentTime, sizeof(currentTime), timeFile) != NULL) {
+		printf("\n%s\n", currentTime);
+	}
+	fclose(timeFile);
+	return;
+}
+
+
+
+/************************************
+function writeTimefile()
+This function opens and writes the
+current time to a file 
+**************************************/
+void * writeTimeFile() {
+	char timeString[300]; //time string
+	DIR *d;
+	//struct dirent *dir;
+	time_t currTime; //for getting current current time
+	FILE* timeFile; //file pointer to open time file.
+	struct tm *tmp; //used example on https://linux.die.net/man/3/strftime
+	
+					
+	//Was is rooms directory need the parent used example from stackoverflow
+	//char parent[200]; //https://stackoverflow.com/questions/24050361/c-programming-how-can-i-get-parent-directory
+	//snprintf(parent, sizeof(parent), "%s/..", dirName);
+	d = opendir(parentDir);
+	chdir(parentDir);
+	memset(timeString, '\0', sizeof(timeString));
+
+	currTime = time(NULL);
+
+	tmp = localtime(&currTime);
+	//get time in exact format 
+	strftime(timeString, sizeof(timeString), "%I:%M%P, %A, %B %e, %Y", tmp);
+	timeFile = fopen("currentTime.txt", "w");
+	//open and write to file 
+	fprintf(timeFile, "%s", timeString);
+	fclose(timeFile);
+	closedir(d);
+	return NULL;
+	
+}
+
+
+
+/*************************************
+function: initializeThreads
+When the time function is called
+a lock is placed on a thread that
+is created andtold to start writing
+time to a file. The thread is joined
+to make sure the main program does not continue 
+untill the time has been writing. 
+the mutex is unlock
+**********************************************/
+void initializeThreads() {
+	
+	
+	int result;
+	pthread_t currTimeThread;
+	pthread_mutex_lock(&timeLock);
+	result = pthread_create(&currTimeThread, NULL, writeTimeFile, NULL);
+	pthread_mutex_unlock(&timeLock);
+	pthread_join(currTimeThread,NULL);
+	
+	
+
+}
 
 /************************************
 function: findNewestFile()
@@ -121,11 +211,14 @@ void readFile(struct room *roomArr, char* dirName) {
 	FILE *file;
 	int i, j = 0;
 	
+	//loop through each index of struct and read each file line
 	for (i = 0; i < NUM_ROOMS; ++i) {
 		j = 0;
 		memset(line, '\0', sizeof(line));
 		file = fopen(roomArr[i].roomName, "r");
 		while (fgets(line, sizeof(line), file) != NULL) {
+			
+			//data: data going into struct, type=what data member to put data in struct
 			sscanf(line, "%s %s %s", type,punc, data);
 
 			if(strcmp(type, "CONNECTION")==0){
@@ -153,6 +246,7 @@ void readFile(struct room *roomArr, char* dirName) {
 				}
 				
 			}
+			//clear buffer of eronious data
 			memset(line, '\0', sizeof(line));
 			memset(type, '\0', sizeof(type));
 			memset(punc, '\0', sizeof(punc));
@@ -243,11 +337,12 @@ logic for the game
 ******************************************/
 void startGame(struct room *roomArr) {
 	int currentRoom = findStart(roomArr);
-	int roomsVisited[20];
-	int valid = -1, stepCount = 0, numCharsEntered = -5;
+	int roomsVisited[40];
+	int valid = -1, stepCount = 0, numCharsEntered = -5, j;
 	size_t bufferSize = 32;
 	char *lineEntered = NULL, *i;
 	//printRoom(findStart(roomArr), roomArr);
+	
 	while (roomArr[currentRoom].rtype != 2) {
 		printRoom(currentRoom, roomArr);
 		numCharsEntered = getline(&lineEntered, &bufferSize, stdin);
@@ -255,11 +350,18 @@ void startGame(struct room *roomArr) {
 		*i = '\0';
 		if (checkIfValid(roomArr, lineEntered, currentRoom) > -1) {
 			currentRoom = getRoomIndex(roomArr, lineEntered);
+			roomsVisited[stepCount] = currentRoom;
 			stepCount++;
+			
+			
+		}
+		else if (strcmp(lineEntered, "time") == 0) {
+			initializeThreads();
+			getTime();
 		}
 
 		else {
-			printf("HUH? I DON'T UNDERSTAND THAT ROOM. TRY AGAIN.\n");
+			printf("\nHUH? I DON'T UNDERSTAND THAT ROOM. TRY AGAIN.\n");
 		}
 		
 	}
@@ -267,6 +369,9 @@ void startGame(struct room *roomArr) {
 	if (roomArr[currentRoom].rtype == 2) {
 		printf("YOU HAVE FOUND THE END ROOM. CONGRATULATIONS!\n");
 		printf("YOU TOOK %d STEPS. YOUR PATH TO VICTORY WAS: \n", stepCount);
+		for (j = 0; j < stepCount; ++j) {
+			printf("%s\n", roomArr[roomsVisited[j]].roomName);
+		}
 
 	}
 	return;
@@ -274,7 +379,7 @@ void startGame(struct room *roomArr) {
 
 
 void initializeGame() {
-	char dirName[256];
+	//char dirName[256];
 	struct room roomArr[NUM_ROOMS];
 	int gameTime = findNewestFile(dirName);
 	initializeRooms(roomArr,dirName);
@@ -287,6 +392,7 @@ void initializeGame() {
 }
 
 int main(){
+	getcwd(parentDir, sizeof(parentDir));
 	initializeGame();
 	//findNewestFile();
 	return 0;
