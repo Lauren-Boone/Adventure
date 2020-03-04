@@ -1,5 +1,6 @@
 # Adventure
 This program is simple game akin to old text adventure games like Adventure.
+See Adventure File:
 There are two programs, one program to build the rooms and their connections and another to emulate the game.
 The game starts by showing you the room and possible connecting rooms. You must choose a rooms from the connections list to enter. There are 
 a total of 10 rooms. One room is the start room and a another is the end room. 
